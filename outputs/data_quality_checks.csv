@@ -1,0 +1,6 @@
+﻿check,status,detail
+tutoring_missing_values,pass,Baseline and follow-up tutoring status must both be observed before new/never treatment status is assigned.
+core_tutoring_construction,pass,"Core tutoring is built from Chinese, math, and English subject tutoring variables before sample filtering."
+subject_specific_models,pass,Subject-specific achievement models use the baseline-no-core-tutoring sample and control the other two newly started core-subject tutoring indicators.
+analysis_outputs,pass,"Processed panel data, Fall 2013 analysis sample, sample flow, model results, diagnostics, and robustness tables are generated from raw data."
+parent_covariates,pass,Baseline parent-questionnaire relative income and direct child-time variables are merged by student id and included in the covariate set.

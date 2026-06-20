@@ -1,0 +1,17 @@
+﻿step,n
+baseline_total,19487
+baseline_grade7_matched,10279
+fall2013_matched,6262
+fall2013_any_two_wave_nonmissing,5677
+baseline_any_tutoring,2736
+followup_any_tutoring,2878
+fall2013_core_two_wave_nonmissing,5677
+baseline_core_tutoring,1816
+followup_core_tutoring,2009
+new_any_tutoring,892
+never_any_tutoring,2049
+new_core_tutoring,826
+never_core_tutoring,3035
+new_math_tutoring,806
+new_chinese_tutoring,393
+new_english_tutoring,575

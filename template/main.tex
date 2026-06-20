@@ -1,0 +1,128 @@
+% !TEX program = xelatex
+% ============================================================================
+% 中文课程作业 LaTeX 模板
+% 中文课程作业 LaTeX 模板
+% ============================================================================
+% 使用方法：
+%   1. 修改 \title、\author 中的个人信息
+%   2. 在正文各 section 中填写内容
+%   3. 如需图片，将图片文件放在 ../figures/ 目录下
+%   4. 编译：latexmk -xelatex main.tex
+% ============================================================================
+
+\documentclass[12pt, a4paper]{ctexart}
+
+% --- 页面与排版 ---
+\usepackage{geometry}
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm, headheight=0pt, headsep=0pt}
+
+\usepackage{setspace}
+\onehalfspacing
+
+% --- 数学与表格 ---
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% --- 图片路径：指向项目 figures/ 目录（可按需修改） ---
+\graphicspath{{../outputs/figures/}}
+
+% --- 标题格式 ---
+\ctexset{
+  section = {
+    format    = \large\bfseries\raggedright,
+    afterskip = 0.8em plus 0.2em minus 0.2em,
+  },
+  subsection = {
+    format    = \normalsize\bfseries\raggedright,
+    afterskip = 0.6em plus 0.1em minus 0.1em,
+  },
+}
+
+% --- 页面风格：无页眉，仅页码 ---
+\pagestyle{plain}
+
+% --- 标题信息（修改这里） ---
+\title{\vspace{-1.5em}作业标题\vspace{-0.5em}}
+\author{姓名 \quad 邮箱 \quad 学院}
+\date{}
+
+\begin{document}
+
+\maketitle
+\vspace{-0.8em}
+
+% --- 摘要 ---
+\noindent\textbf{摘要：}%
+在此处撰写摘要。摘要应简要概述研究问题、方法、主要结果和结论。篇幅控制在 150--300 字。
+
+\vspace{1em}
+
+% ============================================================
+\section{引言}
+% ============================================================
+
+引言部分介绍研究背景、相关工作和研究动机。
+
+% ============================================================
+\section{方法}
+% ============================================================
+
+方法部分描述你的理论框架、模型设定和估计策略。对于包含数学公式的方法，可以使用行内公式 \(E = mc^2\) 或行间公式：
+
+\begin{equation}
+    \hat{\theta} = \frac{1}{n} \sum_{i=1}^{n} f(X_i)
+    \label{eq:example}
+\end{equation}
+
+公式~\eqref{eq:example} 展示了某估计量的定义。
+
+% ============================================================
+\section{实验设置}
+% ============================================================
+
+\subsection{数据}
+
+描述数据来源、样本量、变量定义和预处理步骤。
+
+% --- 图片占位示例 ---
+% 如需插入图片，请使用以下格式：
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=0.80\linewidth]{your-figure.pdf}
+%     \caption{图片标题}
+%     \label{fig:example}
+% \end{figure}
+%
+% 如果图片尚未准备好，可以使用占位框：
+% \begin{figure}[t]
+%     \centering
+%     \fbox{\parbox{0.85\linewidth}{\centering 图片占位：\texttt{your-figure.pdf}}}
+%     \caption{图片标题（占位）}
+%     \label{fig:placeholder}
+% \end{figure}
+
+\subsection{实现细节}
+
+描述编程语言、关键库、超参数设置等。
+
+% ============================================================
+\section{结果与讨论}
+% ============================================================
+
+结果与讨论部分呈现主要发现并分析其含义。
+
+% ============================================================
+\section{结论}
+% ============================================================
+
+结论部分总结主要发现，讨论局限性，指出未来方向。
+
+% ============================================================
+% 参考文献（如需使用 BibTeX，取消以下注释并创建 refs.bib）
+% \bibliographystyle{plain}
+% \bibliography{refs}
+% ============================================================
+
+\end{document}
