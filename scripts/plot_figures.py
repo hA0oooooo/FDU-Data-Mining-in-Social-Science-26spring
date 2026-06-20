@@ -84,48 +84,54 @@ def p_label(pvalue):
     return f"p={pvalue:.3f}"
 
 
-def plot_balance_single(data, column, title, color, filename, xlim):
-    ordered = data.assign(abs_smd=data[column].abs()).sort_values("abs_smd")
+def plot_balance():
+    data = pd.read_csv(PROJECT_ROOT / "outputs" / "balance_diagnostics.csv")
+    ordered = data.assign(abs_smd=data["raw_smd"].abs()).sort_values("abs_smd")
     labels = [BALANCE_LABELS.get(c, c) for c in ordered["covariate"]]
-    values = ordered[column].to_numpy()
     y = np.arange(len(ordered))
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.barh(y, values, color=color, alpha=0.86)
+    max_abs = max(data["raw_smd"].abs().max(), data["ipw_smd"].abs().max(), 0.1)
+    xlim = (-max_abs * 1.2, max_abs * 1.2)
+
+    fig, ax = plt.subplots(figsize=(8.2, 6.0))
+    for i, (_, row) in enumerate(ordered.iterrows()):
+        ax.plot(
+            [row["raw_smd"], row["ipw_smd"]],
+            [i, i],
+            color="#B0B0B0",
+            linewidth=0.9,
+            alpha=0.75,
+            zorder=1,
+        )
+    ax.scatter(
+        ordered["raw_smd"],
+        y,
+        color="#C00000",
+        label="IPW 前",
+        s=42,
+        zorder=3,
+    )
+    ax.scatter(
+        ordered["ipw_smd"],
+        y,
+        color="#2F5597",
+        label="IPW 后",
+        s=42,
+        zorder=3,
+    )
     ax.axvline(0, color="#333333", linewidth=1)
     ax.axvline(0.1, color="#777777", linewidth=1, linestyle=":")
     ax.axvline(-0.1, color="#777777", linewidth=1, linestyle=":")
     ax.set_yticks(y)
     ax.set_yticklabels(labels)
-    ax.set_xlabel("标准化均值差")
-    ax.set_title(title)
+    ax.set_xlabel("标准化均值差（SMD）")
+    ax.set_title("IPW 前后协变量标准化均值差")
     ax.set_xlim(xlim)
-    save_figure(fig, filename)
+    ax.legend(loc="lower right", frameon=False)
+    save_figure(fig, "figure1_balance_smd.png")
 
 
-def plot_balance():
-    data = pd.read_csv(PROJECT_ROOT / "outputs" / "balance_diagnostics.csv")
-    max_abs = max(data["raw_smd"].abs().max(), data["ipw_smd"].abs().max(), 0.1)
-    xlim = (-max_abs * 1.2, max_abs * 1.2)
-    plot_balance_single(
-        data,
-        "raw_smd",
-        "IPW 前协变量平衡",
-        "#C00000",
-        "figure1_balance_before.png",
-        xlim,
-    )
-    plot_balance_single(
-        data,
-        "ipw_smd",
-        "IPW 后协变量平衡",
-        "#2F5597",
-        "figure1_balance_after.png",
-        xlim,
-    )
-
-
-def plot_coefs(data, analyses, title, filename, xlim=None):
+def plot_coefs(data, analyses, filename, xlim=None):
     rows = []
     for i, analysis in enumerate(analyses):
         for method in METHOD_ORDER:
@@ -138,8 +144,9 @@ def plot_coefs(data, analyses, title, filename, xlim=None):
             rows.append(item)
     plot_data = pd.DataFrame(rows)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    offsets = {"DID": -0.18, "IPW-DID": 0.0, "DR-DID": 0.18}
+    height = max(3.2, 0.72 * len(analyses) + 1.75)
+    fig, ax = plt.subplots(figsize=(8.2, height))
+    offsets = {"DID": -0.22, "IPW-DID": 0.0, "DR-DID": 0.22}
     for method in METHOD_ORDER:
         sub = plot_data[plot_data["method"] == method]
         if sub.empty:
@@ -177,15 +184,14 @@ def plot_coefs(data, analyses, title, filename, xlim=None):
     labels = [MAIN_LABELS.get(a, a) for a in analyses]
     ax.set_yticks(np.arange(len(labels)))
     ax.set_yticklabels(labels)
-    ax.set_ylim(len(labels) - 0.45, -0.45)
+    ax.set_ylim(len(labels) - 0.62, -0.62)
     ax.axvline(0, color="#333333", linewidth=1)
     ax.set_xlabel("估计系数与 95% 置信区间")
-    ax.set_title(title)
     if xlim is not None:
         ax.set_xlim(xlim)
     ax.legend(
         loc="upper center",
-        bbox_to_anchor=(0.5, -0.13),
+        bbox_to_anchor=(0.5, -0.18),
         ncol=3,
         frameon=False,
     )
@@ -209,14 +215,12 @@ def plot_main_results():
     plot_coefs(
         main,
         academic,
-        "实证结果：学业成绩",
         "figure2_main_academic.png",
         xlim=(-0.16, 0.25),
     )
     plot_coefs(
         main,
         nonacademic,
-        "实证结果：认知水平和情绪状态",
         "figure2_main_cognition_emotion.png",
         xlim=(-0.10, 0.16),
     )
@@ -254,8 +258,8 @@ def math_cross_subject_results(control_other_subjects):
     return pd.DataFrame(rows)
 
 
-def plot_math_cross_subject(data, title, filename):
-    fig, ax = plt.subplots(figsize=(8, 4.2))
+def plot_math_cross_subject(data, filename):
+    fig, ax = plt.subplots(figsize=(8.2, 2.9))
     y = np.arange(len(data))
     xerr = np.vstack(
         [
@@ -289,7 +293,6 @@ def plot_math_cross_subject(data, title, filename):
     ax.set_ylim(len(data) - 0.45, -0.45)
     ax.set_xlim(-0.08, 0.18)
     ax.set_xlabel("数学补习估计系数与 95% 置信区间")
-    ax.set_title(title)
     save_figure(fig, filename)
 
 
@@ -298,12 +301,10 @@ def plot_cross_subject_comparison():
     with_controls = math_cross_subject_results(control_other_subjects=True)
     plot_math_cross_subject(
         no_controls,
-        "数学补习效应：未控制其他主课补习",
         "figure3_math_without_subject_controls.png",
     )
     plot_math_cross_subject(
         with_controls,
-        "数学补习效应：控制其他主课补习",
         "figure3_math_with_subject_controls.png",
     )
 
